@@ -36,7 +36,7 @@ class App extends Component {
 
   peticionPost = async () => {
     delete this.state.form.id;
-    await axios.post(url, this.state.form).then(response => {
+    await axios.post("https://apiusuarios-apxz.onrender.com/api/usuario", this.state.form).then(response => {
       this.modalInsertar();
       this.peticionGet();
     }).catch(error => {
@@ -45,14 +45,14 @@ class App extends Component {
   }
 
   peticionPut = () => {
-    axios.put(url + this.state.form.id, this.state.form).then(response => {
+    axios.put(`https://apiusuarios-apxz.onrender.com/api/usuario/${this.state.form.id}`, this.state.form).then(response => {
       this.modalInsertar();
       this.peticionGet();
     })
   }
 
   peticionDelete = () => {
-    axios.delete(url + this.state.form.id).then(response => {
+    axios.delete(`https://apiusuarios-apxz.onrender.com/api/usuario/${this.state.form.id}`, this.state.form.id).then(response => {
       this.setState({ modalEliminar: false });
       this.peticionGet();
     })
