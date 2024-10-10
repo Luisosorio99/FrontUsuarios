@@ -7,8 +7,7 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-const url = `${process.env.REACT_APP_API_URL}/api/usuarios`;
+const url = `https://apiusuarios-apxz.onrender.com`;
 class App extends Component {
   state = {
     data: [],
@@ -21,6 +20,7 @@ class App extends Component {
       email: '',
       telefono: '',
       direccion: '',
+      fecha_registro: '',
       estado: '',
       tipoModal: ''
     }
@@ -36,12 +36,14 @@ class App extends Component {
 
   peticionPost = async () => {
     delete this.state.form.id;
-    await axios.post("https://apiusuarios-apxz.onrender.com/api/usuario", this.state.form).then(response => {
-      this.modalInsertar();
-      this.peticionGet();
-    }).catch(error => {
-      console.log(error.message);
-    })
+    console.log(this.state.form); // Asegúrate de que los datos sean correctos
+    await axios.post("https://apiusuarios-apxz.onrender.com/api/usuario/crear", this.state.form)
+      .then(response => {
+        this.modalInsertar();
+        this.peticionGet();
+      }).catch(error => {
+        console.log(error.message);
+      })
   }
 
   peticionPut = () => {
@@ -59,7 +61,20 @@ class App extends Component {
   }
 
   modalInsertar = () => {
-    this.setState({ modalInsertar: !this.state.modalInsertar });
+    this.setState({
+      modalInsertar: !this.state.modalInsertar,
+      form: {
+        id: '',
+        nombre: '',
+        apellido: '',
+        email: '',
+        telefono: '',
+        direccion: '',
+        fecha_registro: '',
+        estado: '',
+        tipoModal: 'insertar'
+      }
+    });
   }
 
   seleccionarUsuario = (usuario) => {
@@ -72,6 +87,7 @@ class App extends Component {
         email: usuario.email,
         telefono: usuario.telefono,
         direccion: usuario.direccion,
+        fecha_registro: usuario.fecha_registro,
         estado: usuario.estado
       }
     })
@@ -96,7 +112,7 @@ class App extends Component {
     return (
       <div className="App">
         <br /><br /><br />
-        <button className="btn btn-success" onClick={() => { this.setState({ form: null, tipoModal: 'insertar' }); this.modalInsertar() }}>Agregar Usuario</button>
+        <button className="btn btn-success" onClick={this.modalInsertar}>Agregar Usuario</button>
         <br /><br />
         <table className="table ">
           <thead>
@@ -107,12 +123,12 @@ class App extends Component {
               <th>Email</th>
               <th>Teléfono</th>
               <th>Dirección</th>
+              <th>Fecha de Registro</th>
               <th>Estado</th>
-           
             </tr>
           </thead>
           <tbody>
-            {this.state.data.map(usuario => {
+            {Array.isArray(this.state.data) && this.state.data.map(usuario => {
               return (
                 <tr key={usuario.id}>
                   <td>{usuario.id}</td>
@@ -121,6 +137,7 @@ class App extends Component {
                   <td>{usuario.email}</td>
                   <td>{usuario.telefono}</td>
                   <td>{usuario.direccion}</td>
+                  <td>{usuario.fecha_registro}</td>
                   <td>{usuario.estado}</td>
                   <td>
                     <button className="btn btn-primary" onClick={() => { this.seleccionarUsuario(usuario); this.modalInsertar() }}><FontAwesomeIcon icon={faEdit} /></button>
@@ -141,25 +158,27 @@ class App extends Component {
           <ModalBody>
             <div className="form-group">
               <label htmlFor="id">ID</label>
-              <input className="form-control" type="text" name="id" id="id" readOnly onChange={this.handleChange} value={form ? form.id : this.state.data.length + 1} />
+              <input className="form-control" type="text" name="id" id="id" readOnly onChange={this.handleChange} value={form ? form.id || '' : ''} />
               <br />
               <label htmlFor="nombre">Nombre</label>
-              <input className="form-control" type="text" name="nombre" id="nombre" onChange={this.handleChange} value={form ? form.nombre : ''} />
+              <input className="form-control" type="text" name="nombre" id="nombre" onChange={this.handleChange} value={form ? form.nombre || '' : ''} />
               <br />
               <label htmlFor="apellido">Apellido</label>
-              <input className="form-control" type="text" name="apellido" id="apellido" onChange={this.handleChange} value={form ? form.apellido : ''} />
+              <input className="form-control" type="text" name="apellido" id="apellido" onChange={this.handleChange} value={form ? form.apellido || '' : ''} />
               <br />
               <label htmlFor="email">Email</label>
-              <input className="form-control" type="email" name="email" id="email" onChange={this.handleChange} value={form ? form.email : ''} />
+              <input className="form-control" type="email" name="email" id="email" onChange={this.handleChange} value={form ? form.email || '' : ''} />
               <br />
               <label htmlFor="telefono">Teléfono</label>
-              <input className="form-control" type="text" name="telefono" id="telefono" onChange={this.handleChange} value={form ? form.telefono : ''} />
+              <input className="form-control" type="text" name="telefono" id="telefono" onChange={this.handleChange} value={form ? form.telefono || '' : ''} />
               <br />
               <label htmlFor="direccion">Dirección</label>
-              <input className="form-control" type="text" name="direccion" id="direccion" onChange={this.handleChange} value={form ? form.direccion : ''} />
+              <input className="form-control" type="text" name="direccion" id="direccion" onChange={this.handleChange} value={form ? form.direccion || '' : ''} />
               <br />
+              <label htmlFor="fecha_registro">Fecha de Registro</label>
+              <input className="form-control" type="date" name="fecha_registro" id="fecha_registro" onChange={this.handleChange} value={form? form.fecha_registro || '' : ''} />
               <label htmlFor="estado">Estado</label>
-              <select className="form-control" name="estado" onChange={this.handleChange} value={form ? form.estado : ''}>
+              <select className="form-control" name="estado" onChange={this.handleChange} value={form ? form.estado || '' : ''}>
                 <option value="activo">Activo</option>
                 <option value="inactivo">Inactivo</option>
                 <option value="suspendido">Suspendido</option>
@@ -168,13 +187,13 @@ class App extends Component {
           </ModalBody>
 
           <ModalFooter>
-            {this.state.tipoModal === 'insertar' ?
+            {this.state.tipoModal === 'insertar' ? ( 
               <button className="btn btn-success" onClick={() => this.peticionPost()}>
                 Insertar
-              </button> : <button className="btn btn-primary" onClick={() => this.peticionPut()}>
+              </button> ) : (  <button className="btn btn-primary" onClick={() => this.peticionPost()}>
                 Actualizar
               </button>
-            }
+            )}
             <button className="btn btn-danger" onClick={() => this.modalInsertar()}>Cancelar</button>
           </ModalFooter>
         </Modal>
