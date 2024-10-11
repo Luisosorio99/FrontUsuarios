@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const baseURL = 'https://apiusuarios-apxz.onrender.com/api/usuario';
+
 const UserSearch = () => {
   const [id_usuario, setId] = useState('');
   const [user, setUser] = useState(null);
@@ -13,7 +15,7 @@ const UserSearch = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:8080/api/usuario/${id_usuario}`);
+      const response = await axios.get(`${baseURL}/${id_usuario}`);
       if (response.data.usuario) {
         setUser(response.data.usuario);
         setErrorMessage('');

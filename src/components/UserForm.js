@@ -27,11 +27,13 @@ const UserForm = ({ isEditing, userData, onUserChange }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const baseURL = 'https://apiusuarios-apxz.onrender.com/api/usuario';
+
       if (isEditing) {
-        await axios.put(`http://localhost:8080/api/usuario/actualizar/${user.id_usuario}`, user);
+        await axios.put(`${baseURL}/actualizar/${user.id_usuario}`, user);
         alert('Usuario actualizado con éxito');
       } else {
-        await axios.post('http://localhost:8080/api/usuario/crear', user);
+        await axios.post(`${baseURL}/crear`, user);
         alert('Usuario creado con éxito');
       }
       onUserChange(); // Notificar el cambio y cerrar el modal

@@ -8,6 +8,8 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 
+const baseURL = 'https://apiusuarios-apxz.onrender.com/api/usuario';
+
 function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +26,7 @@ function App() {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/usuario/${id_usuario}`);
+      const response = await axios.get(`${baseURL}/${id_usuario}`);
       if (response.data.usuario) {
         setSearchedUser(response.data.usuario);
         setErrorMessage('');
