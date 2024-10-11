@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+// UserForm.js
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const UserForm = ({ isEditing, userData }) => {
-  const [user, setUser] = useState(userData || {
+const UserForm = ({ isEditing, userData, onUserChange }) => {
+  const [user, setUser] = useState({
     nombre: '',
     apellido: '',
     email: '',
     telefono: '',
     direccion: '',
     fecha_registro: '',
-    estado: 'activo'
+    estado: 'activo',
   });
+
+  useEffect(() => {
+    if (isEditing && userData) {
+      setUser(userData);
+    }
+  }, [isEditing, userData]);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -20,131 +28,113 @@ const UserForm = ({ isEditing, userData }) => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await axios.put(`/api/usuario/actualizar/${user.id}`, user);
+        await axios.put(`http://localhost:8080/api/usuario/actualizar/${user.id_usuario}`, user);
         alert('Usuario actualizado con éxito');
       } else {
-        await axios.post('/api/usuario/crear', user);
+        await axios.post('http://localhost:8080/api/usuario/crear', user);
         alert('Usuario creado con éxito');
       }
+      onUserChange(); // Notificar el cambio y cerrar el modal
     } catch (error) {
       console.error('Error al enviar los datos del usuario', error);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <h2>{isEditing ? 'Editar Usuario' : 'Crear Usuario'}</h2>
+    <div className="container">
       <form onSubmit={handleSubmit}>
-        <table className="table table-bordered">
-          <tbody>
-            <tr>
-              <td><label htmlFor="nombre" className="form-label">Nombre</label></td>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="nombre"
-                  name="nombre"
-                  value={user.nombre}
-                  onChange={handleChange}
-                  placeholder="Nombre"
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="apellido" className="form-label">Apellido</label></td>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="apellido"
-                  name="apellido"
-                  value={user.apellido}
-                  onChange={handleChange}
-                  placeholder="Apellido"
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="email" className="form-label">Email</label></td>
-              <td>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  value={user.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="telefono" className="form-label">Teléfono</label></td>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="telefono"
-                  name="telefono"
-                  value={user.telefono}
-                  onChange={handleChange}
-                  placeholder="Teléfono"
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="direccion" className="form-label">Dirección</label></td>
-              <td>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="direccion"
-                  name="direccion"
-                  value={user.direccion}
-                  onChange={handleChange}
-                  placeholder="Dirección"
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="fecha_registro" className="form-label">Fecha de Registro</label></td>
-              <td>
-                <input
-                  type="date"
-                  className="form-control"
-                  id="fecha_registro"
-                  name="fecha_registro"
-                  value={user.fecha_registro}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td><label htmlFor="estado" className="form-label">Estado</label></td>
-              <td>
-                <select
-                  className="form-select"
-                  id="estado"
-                  name="estado"
-                  value={user.estado}
-                  onChange={handleChange}
-                >
-                  <option value="activo">Activo</option>
-                  <option value="inactivo">Inactivo</option>
-                  <option value="suspendido">Suspendido</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div className="text-center">
+        <div className="form-group">
+          <label htmlFor="nombre">Nombre</label>
+          <input
+            type="text"
+            className="form-control"
+            id="nombre"
+            name="nombre"
+            value={user.nombre}
+            onChange={handleChange}
+            placeholder="Nombre"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="apellido">Apellido</label>
+          <input
+            type="text"
+            className="form-control"
+            id="apellido"
+            name="apellido"
+            value={user.apellido}
+            onChange={handleChange}
+            placeholder="Apellido"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Correo electrónico</label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            value={user.email}
+            onChange={handleChange}
+            placeholder="Correo electrónico"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="telefono">Teléfono</label>
+          <input
+            type="text"
+            className="form-control"
+            id="telefono"
+            name="telefono"
+            value={user.telefono}
+            onChange={handleChange}
+            placeholder="Teléfono"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="direccion">Dirección</label>
+          <input
+            type="text"
+            className="form-control"
+            id="direccion"
+            name="direccion"
+            value={user.direccion}
+            onChange={handleChange}
+            placeholder="Dirección"
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="fecha_registro">Fecha de registro</label>
+          <input
+            type="date"
+            className="form-control"
+            id="fecha_registro"
+            name="fecha_registro"
+            value={user.fecha_registro}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="estado">Estado</label>
+          <select
+            className="form-control"
+            id="estado"
+            name="estado"
+            value={user.estado}
+            onChange={handleChange}
+          >
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="suspendido">Suspendido</option>
+          </select>
+        </div>
+        <div className="text-center mt-3">
           <button type="submit" className="btn btn-primary">
             {isEditing ? 'Actualizar Usuario' : 'Crear Usuario'}
           </button>
